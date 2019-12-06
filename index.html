@@ -28,13 +28,13 @@ incoming API request.
                             <a href="{{relatorio.link}}">{{relatorio.nome}}</a>
                         </div>
                         <div class="col-md-1 text-center">
-                            <span class="badge badge-success badge-pill">{{relatorio.totalOk}}</span>
+                            <span class="badge badge-success badge-pill" title="OK">{{relatorio.totalOk}}</span>
                         </div>
                         <div class="col-md-1 text-center">
-                            <span class="badge badge-danger badge-pill">{{relatorio.totalErro}}</span>
+                            <span class="badge badge-danger badge-pill" title="COM ERRO">{{relatorio.totalErro}}</span>
                         </div>
                         <div class="col-md-1 text-center">
-                            <span class="badge badge-secondary badge-pill">{{relatorio.totalNaoEncontrado}}</span>
+                            <span class="badge badge-secondary badge-pill" title="NÃO ENCONTRADO">{{relatorio.totalNaoEncontrado}}</span>
                         </div>
                 </div>
             </div>
@@ -47,7 +47,12 @@ incoming API request.
             $scope.relatorios = [
                 { "nome" : "Relatório de Empenhos", "link" : "resultado-empenhos.html", "totalOk": 2093, "totalErro": 186, "totalNaoEncontrado": 715 },
                 { "nome" : "Relatório de Anulação de Empenhos", "link" : "resultado-anulacao_empenhos.html", "totalOk": 109, "totalErro": 0, "totalNaoEncontrado": 2 },
-                { "nome" : "Relatório de Liquidações", "link" : "resultado-liquidacoes.html", "totalOk": 1800, "totalErro": 3178, "totalNaoEncontrado": 739 }
+                { "nome" : "Relatório de Liquidações", "link" : "resultado-liquidacoes.html", "totalOk": 1800, "totalErro": 3178, "totalNaoEncontrado": 739 },
+                { "nome" : "Relatório de Liquidações - Vencimentos", "link" : "resultado-liquidacoes_vencimentos.html", "totalOk": 4968, "totalErro": 10, "totalNaoEncontrado": 739 },
+                { "nome" : "Relatório de Liquidações - Comprovantes", "link" : "resultado-liquidacoes_comprovantes.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 4263 },
+                { "nome" : "Relatório de Anulações de Liquidação", "link" : "resultado-anulacao_liquidacoes.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 92 },
+                { "nome" : "Relatório de Anulações de Liquidação - Vencimentos", "link" : "resultado-anulacao_liquidacoes_vencimentos.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 92 }
+
             ]
         });
         </script>
