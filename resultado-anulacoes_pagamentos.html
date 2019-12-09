@@ -1,0 +1,793 @@
+<!--
+Invoice dynamically rendered into html using handlebars and converted into pdf
+using chrome-pdf recipe. The styles are extracted into separate asset for
+better readability and later reuse.
+
+Data to this sample are mocked at the design time and should be filled on the
+incoming API request.
+!-->
+
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <!--style>
+            .invoice-box {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+    border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+    font-size: 16px;
+    line-height: 24px;
+    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    color: #555;
+}
+.invoice-box table {
+    width: 100%;
+    line-height: inherit;
+    text-align: left;
+}
+.invoice-box table td {
+    padding: 5px;
+    vertical-align: top;
+}
+.invoice-box table tr td:nth-child(2) {
+    text-align: right;
+}
+.invoice-box table tr.top table td {
+    padding-bottom: 20px;
+}
+.invoice-box table tr.top table td.title {
+    font-size: 45px;
+    line-height: 45px;
+    color: #333;
+}
+.invoice-box table tr.information table td {
+    padding-bottom: 40px;
+}
+.invoice-box table tr.heading td {
+    background: #eee;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
+.invoice-box table tr.details td {
+    padding-bottom: 20px;
+}
+.invoice-box table tr.item td {
+    border-bottom: 1px solid #eee;
+}
+.invoice-box table tr.item.last td {
+    border-bottom: none;
+}
+.invoice-box table tr.total td:nth-child(2) {
+    border-top: 2px solid #eee;
+    font-weight: bold;
+}
+@media only screen and (max-width: 600px) {
+    .invoice-box table tr.top table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+    .invoice-box table tr.information table td {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+}
+        </style-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script type="text/javascript">
+            function aplicaCor() {
+                var x = document.getElementsByClassName('resultado');
+                for (var i = 0; i < x.length; i++) {
+                    if(x[i].textContent == "OK"){
+                        x[i].style.color = "GREEN"
+                    }else{
+                        x[i].style.color = "RED"
+                    };
+                }                
+            }
+
+        </script>
+        <title>Resultado Anulações de Pagamentos</title>
+    </head>
+    <body onload="aplicaCor()">
+        <div class="container">
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="offset-md-2 col-md-8">
+                    <a href="index.html">Voltar</a>
+                </div>
+            </div>
+            <div class="row justify-content-md-center" style="margin-bottom: 10px;">
+                <div class="col-md-4">
+                    <div class="row" style="margin-bottom:10px;">
+                        <div class="col-md-12">
+                            <h3 style="margin-bottom:0px;">Resultado Anulações de Pagamentos</h3>
+                            <span>Dados verificados até a data 12/06/2019</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="label">Filtros</label>
+                            <div id="myBtnContainer">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-secondary active" onclick="filterSelection('all')"> Todos</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="filterSelection('nao-encontrado')"> Não encontrado</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="filterSelection('possui-erro')"> Possui erro</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total OK:
+                            <span class="badge badge-success badge-pill">60</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total com erro:
+                            <span class="badge badge-danger badge-pill">6</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total não encontrado:
+                            <span class="badge badge-secondary badge-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>            
+            <div class="row justify-content-md-center">
+                <div class="col-md-8">
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 1</span>
+                            <span class="text-muted"><small>Pagamento 90|Empenho 238</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 2</span>
+                            <span class="text-muted"><small>Pagamento 104|Empenho 237</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 5</span>
+                            <span class="text-muted"><small>Pagamento 171|Empenho 291</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 3</span>
+                            <span class="text-muted"><small>Pagamento 446|Empenho 365</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 4</span>
+                            <span class="text-muted"><small>Pagamento 532|Empenho 381</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 8</span>
+                            <span class="text-muted"><small>Pagamento 876|Empenho 740</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 9</span>
+                            <span class="text-muted"><small>Pagamento 974|Empenho 789</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 6</span>
+                            <span class="text-muted"><small>Pagamento 990|Empenho 791</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 14</span>
+                            <span class="text-muted"><small>Pagamento 1464|Empenho 937</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 7</span>
+                            <span class="text-muted"><small>Pagamento 1544|Empenho 998</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 25</span>
+                            <span class="text-muted"><small>Pagamento 1887|Empenho 1045</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 24</span>
+                            <span class="text-muted"><small>Pagamento 1887|Empenho 1045</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv possui-erro">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 22</span>
+                            <span class="text-muted"><small>Pagamento 2051|Empenho 1058</small></span>
+                            <span class="resultado float-right"><strong>POSSUI ERRO</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                    <li>Recurso diferente (DSK: 0550001000000 !&#x3D; CLOUD: 0550000000100)</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv possui-erro">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 23</span>
+                            <span class="text-muted"><small>Pagamento 2053|Empenho 1060</small></span>
+                            <span class="resultado float-right"><strong>POSSUI ERRO</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                    <li>Recurso diferente (DSK: 0550001010000 !&#x3D; CLOUD: 0550000000101)</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv possui-erro">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 27</span>
+                            <span class="text-muted"><small>Pagamento 2213|Empenho 1236</small></span>
+                            <span class="resultado float-right"><strong>POSSUI ERRO</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                    <li>Recurso diferente (DSK: 0550000980000 !&#x3D; CLOUD: 0550000000098)</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv possui-erro">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 38</span>
+                            <span class="text-muted"><small>Pagamento 2264|Empenho 1268</small></span>
+                            <span class="resultado float-right"><strong>POSSUI ERRO</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                    <li>Recurso diferente (DSK: 0550000990000 !&#x3D; CLOUD: 0550000000099)</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 61</span>
+                            <span class="text-muted"><small>Pagamento 2258|Empenho 1265</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 54</span>
+                            <span class="text-muted"><small>Pagamento 2485|Empenho 1341</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 26</span>
+                            <span class="text-muted"><small>Pagamento 2484|Empenho 1342</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 11</span>
+                            <span class="text-muted"><small>Pagamento 2589|Empenho 279</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 12</span>
+                            <span class="text-muted"><small>Pagamento 2590|Empenho 279</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 10</span>
+                            <span class="text-muted"><small>Pagamento 2601|Empenho 281</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv possui-erro">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 13</span>
+                            <span class="text-muted"><small>Pagamento 2655|Empenho 1052</small></span>
+                            <span class="resultado float-right"><strong>POSSUI ERRO</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                    <li>Recurso diferente (DSK: 0550000950000 !&#x3D; CLOUD: 0550000000095)</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 40</span>
+                            <span class="text-muted"><small>Pagamento 2936|Empenho 1437</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 39</span>
+                            <span class="text-muted"><small>Pagamento 2936|Empenho 1437</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 19</span>
+                            <span class="text-muted"><small>Pagamento 3032|Empenho 1480</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 44</span>
+                            <span class="text-muted"><small>Pagamento 3160|Empenho 1514</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 36</span>
+                            <span class="text-muted"><small>Pagamento 3159|Empenho 1515</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 16</span>
+                            <span class="text-muted"><small>Pagamento 3207|Empenho 1407</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 21</span>
+                            <span class="text-muted"><small>Pagamento 3208|Empenho 1407</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 17</span>
+                            <span class="text-muted"><small>Pagamento 3225|Empenho 1043</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 37</span>
+                            <span class="text-muted"><small>Pagamento 3312|Empenho 1574</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 45</span>
+                            <span class="text-muted"><small>Pagamento 3340|Empenho 1578</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 20</span>
+                            <span class="text-muted"><small>Pagamento 3351|Empenho 1440</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 18</span>
+                            <span class="text-muted"><small>Pagamento 3381|Empenho 1387</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 60</span>
+                            <span class="text-muted"><small>Pagamento 3729|Empenho 1836</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 42</span>
+                            <span class="text-muted"><small>Pagamento 3875|Empenho 796</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 53</span>
+                            <span class="text-muted"><small>Pagamento 3891|Empenho 1891</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 52</span>
+                            <span class="text-muted"><small>Pagamento 3893|Empenho 1893</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 51</span>
+                            <span class="text-muted"><small>Pagamento 3893|Empenho 1893</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 43</span>
+                            <span class="text-muted"><small>Pagamento 3890|Empenho 1894</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 28</span>
+                            <span class="text-muted"><small>Pagamento 3913|Empenho 1895</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 29</span>
+                            <span class="text-muted"><small>Pagamento 3914|Empenho 1896</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 30</span>
+                            <span class="text-muted"><small>Pagamento 3915|Empenho 1897</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 31</span>
+                            <span class="text-muted"><small>Pagamento 3916|Empenho 1898</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 32</span>
+                            <span class="text-muted"><small>Pagamento 3917|Empenho 1906</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 34</span>
+                            <span class="text-muted"><small>Pagamento 3935|Empenho 1922</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 33</span>
+                            <span class="text-muted"><small>Pagamento 4070|Empenho 1344</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 41</span>
+                            <span class="text-muted"><small>Pagamento 4584|Empenho 2058</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 62</span>
+                            <span class="text-muted"><small>Pagamento 4583|Empenho 2059</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 56</span>
+                            <span class="text-muted"><small>Pagamento 4626|Empenho 2068</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 47</span>
+                            <span class="text-muted"><small>Pagamento 5235|Empenho 50</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 57</span>
+                            <span class="text-muted"><small>Pagamento 5139|Empenho 2274</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 65</span>
+                            <span class="text-muted"><small>Pagamento 5183|Empenho 2303</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 50</span>
+                            <span class="text-muted"><small>Pagamento 5236|Empenho 1314</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 46</span>
+                            <span class="text-muted"><small>Pagamento 5237|Empenho 149</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 69</span>
+                            <span class="text-muted"><small>Pagamento 5297|Empenho 2360</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 68</span>
+                            <span class="text-muted"><small>Pagamento 5297|Empenho 2360</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv possui-erro">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 64</span>
+                            <span class="text-muted"><small>Pagamento 5326|Empenho 2367</small></span>
+                            <span class="resultado float-right"><strong>POSSUI ERRO</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                    <li>Recurso diferente (DSK: 0550000980000 !&#x3D; CLOUD: 0550000000098)</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 58</span>
+                            <span class="text-muted"><small>Pagamento 5421|Empenho 2384</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 59</span>
+                            <span class="text-muted"><small>Pagamento 5443|Empenho 50</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 67</span>
+                            <span class="text-muted"><small>Pagamento 5566|Empenho 2505</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 71</span>
+                            <span class="text-muted"><small>Pagamento 5743|Empenho 2553</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 66</span>
+                            <span class="text-muted"><small>Pagamento 6122|Empenho 2732</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 70</span>
+                            <span class="text-muted"><small>Pagamento 6125|Empenho 2734</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Anulação de Pagamento 63</span>
+                            <span class="text-muted"><small>Pagamento 6407|Empenho 2825</small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        filterSelection("all")
+        function filterSelection(c) {
+        var x, i;
+        x = document.getElementsByClassName("filterDiv");
+        if (c == "all") c = "";
+        for (i = 0; i < x.length; i++) {
+            w3AddClass(x[i], "d-none")
+            if (x[i].className.indexOf(c) > -1) w3RemoveClass(x[i], "d-none");
+        }
+        }
+
+        function w3AddClass(element, name) {
+        var i, arr1, arr2;
+        arr1 = element.className.split(" ");
+        arr2 = name.split(" ");
+        for (i = 0; i < arr2.length; i++) {
+            if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+        }
+        }
+
+        function w3RemoveClass(element, name) {
+        var i, arr1, arr2;
+        arr1 = element.className.split(" ");
+        arr2 = name.split(" ");
+        for (i = 0; i < arr2.length; i++) {
+            while (arr1.indexOf(arr2[i]) > -1) {
+            arr1.splice(arr1.indexOf(arr2[i]), 1);     
+            }
+        }
+        element.className = arr1.join(" ");
+        }
+
+        // Add active class to the current button (highlight it)
+        var btnContainer = document.getElementById("myBtnContainer");
+        var btns = btnContainer.getElementsByClassName("btn");
+        for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function(){
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+        }
+        </script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="http://localhost:5488/extension/browser-client/public/js/jsreport.min.js"></script><script>jsreport.serverUrl='http://localhost:5488';jsreport.template=JSON.parse(decodeURIComponent("%7B%22folder%22%3A%7B%22shortid%22%3A%22FhDpgUe%22%7D%2C%22shortid%22%3A%22ByeGXFzETr%22%2C%22name%22%3A%22resultado-main%22%2C%22recipe%22%3A%22html-with-browser-client%22%2C%22engine%22%3A%22handlebars%22%2C%22chrome%22%3A%7B%22printBackground%22%3Atrue%7D%2C%22creationDate%22%3A%222019-12-03T17%3A19%3A32.077Z%22%2C%22modificationDate%22%3A%222019-12-05T18%3A26%3A37.099Z%22%2C%22_id%22%3A%22xmmXpic7G6RObUGH%22%2C%22data%22%3A%7B%22shortid%22%3A%22SJxCVFfEaH%22%7D%2C%22resources%22%3A%7B%22items%22%3A%5B%5D%7D%2C%22content%22%3A%22%3C!--%5Cr%5CnInvoice%20dynamically%20rendered%20into%20html%20using%20handlebars%20and%20converted%20into%20pdf%5Cr%5Cnusing%20chrome-pdf%20recipe.%20The%20styles%20are%20extracted%20into%20separate%20asset%20for%5Cr%5Cnbetter%20readability%20and%20later%20reuse.%5Cr%5Cn%5Cr%5CnData%20to%20this%20sample%20are%20mocked%20at%20the%20design%20time%20and%20should%20be%20filled%20on%20the%5Cr%5Cnincoming%20API%20request.%5Cr%5Cn!--%3E%5Cr%5Cn%5Cr%5Cn%3Chtml%3E%5Cr%5Cn%20%20%20%20%3Chead%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cmeta%20content%3D%5C%22text%2Fhtml%3B%20charset%3Dutf-8%5C%22%20http-equiv%3D%5C%22Content-Type%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3C!--style%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20.invoice-box%20%7B%5Cr%5Cn%20%20%20%20max-width%3A%20800px%3B%5Cr%5Cn%20%20%20%20margin%3A%20auto%3B%5Cr%5Cn%20%20%20%20padding%3A%2030px%3B%5Cr%5Cn%20%20%20%20border%3A%201px%20solid%20%23eee%3B%5Cr%5Cn%20%20%20%20box-shadow%3A%200%200%2010px%20rgba(0%2C%200%2C%200%2C%20.15)%3B%5Cr%5Cn%20%20%20%20font-size%3A%2016px%3B%5Cr%5Cn%20%20%20%20line-height%3A%2024px%3B%5Cr%5Cn%20%20%20%20font-family%3A%20'Helvetica%20Neue'%2C%20'Helvetica'%2C%20Helvetica%2C%20Arial%2C%20sans-serif%3B%5Cr%5Cn%20%20%20%20color%3A%20%23555%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20%7B%5Cr%5Cn%20%20%20%20width%3A%20100%25%3B%5Cr%5Cn%20%20%20%20line-height%3A%20inherit%3B%5Cr%5Cn%20%20%20%20text-align%3A%20left%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20td%20%7B%5Cr%5Cn%20%20%20%20padding%3A%205px%3B%5Cr%5Cn%20%20%20%20vertical-align%3A%20top%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr%20td%3Anth-child(2)%20%7B%5Cr%5Cn%20%20%20%20text-align%3A%20right%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.top%20table%20td%20%7B%5Cr%5Cn%20%20%20%20padding-bottom%3A%2020px%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.top%20table%20td.title%20%7B%5Cr%5Cn%20%20%20%20font-size%3A%2045px%3B%5Cr%5Cn%20%20%20%20line-height%3A%2045px%3B%5Cr%5Cn%20%20%20%20color%3A%20%23333%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.information%20table%20td%20%7B%5Cr%5Cn%20%20%20%20padding-bottom%3A%2040px%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.heading%20td%20%7B%5Cr%5Cn%20%20%20%20background%3A%20%23eee%3B%5Cr%5Cn%20%20%20%20border-bottom%3A%201px%20solid%20%23ddd%3B%5Cr%5Cn%20%20%20%20font-weight%3A%20bold%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.details%20td%20%7B%5Cr%5Cn%20%20%20%20padding-bottom%3A%2020px%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.item%20td%20%7B%5Cr%5Cn%20%20%20%20border-bottom%3A%201px%20solid%20%23eee%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.item.last%20td%20%7B%5Cr%5Cn%20%20%20%20border-bottom%3A%20none%3B%5Cr%5Cn%7D%5Cr%5Cn.invoice-box%20table%20tr.total%20td%3Anth-child(2)%20%7B%5Cr%5Cn%20%20%20%20border-top%3A%202px%20solid%20%23eee%3B%5Cr%5Cn%20%20%20%20font-weight%3A%20bold%3B%5Cr%5Cn%7D%5Cr%5Cn%40media%20only%20screen%20and%20(max-width%3A%20600px)%20%7B%5Cr%5Cn%20%20%20%20.invoice-box%20table%20tr.top%20table%20td%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20width%3A%20100%25%3B%5Cr%5Cn%20%20%20%20%20%20%20%20display%3A%20block%3B%5Cr%5Cn%20%20%20%20%20%20%20%20text-align%3A%20center%3B%5Cr%5Cn%20%20%20%20%7D%5Cr%5Cn%20%20%20%20.invoice-box%20table%20tr.information%20table%20td%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20width%3A%20100%25%3B%5Cr%5Cn%20%20%20%20%20%20%20%20display%3A%20block%3B%5Cr%5Cn%20%20%20%20%20%20%20%20text-align%3A%20center%3B%5Cr%5Cn%20%20%20%20%7D%5Cr%5Cn%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%3C%2Fstyle--%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Clink%20rel%3D%5C%22stylesheet%5C%22%20href%3D%5C%22https%3A%2F%2Fstackpath.bootstrapcdn.com%2Fbootstrap%2F4.4.1%2Fcss%2Fbootstrap.min.css%5C%22%20integrity%3D%5C%22sha384-Vkoo8x4CGsO3%2BHhxv8T%2FQ5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20type%3D%5C%22text%2Fjavascript%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20function%20aplicaCor()%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20var%20x%20%3D%20document.getElementsByClassName('resultado')%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20(var%20i%20%3D%200%3B%20i%20%3C%20x.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if(x%5Bi%5D.textContent%20%3D%3D%20%5C%22OK%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%5Bi%5D.style.color%20%3D%20%5C%22GREEN%5C%22%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7Delse%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%5Bi%5D.style.color%20%3D%20%5C%22RED%5C%22%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Ctitle%3E%7B%7Btipo%7D%7D%3C%2Ftitle%3E%5Cr%5Cn%20%20%20%20%3C%2Fhead%3E%5Cr%5Cn%20%20%20%20%3Cbody%20onload%3D%5C%22aplicaCor()%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22container%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%5C%22%20style%3D%5C%22margin-bottom%3A%2010px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22offset-md-2%20col-md-8%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%5C%22index.html%5C%22%3EVoltar%3C%2Fa%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%20justify-content-md-center%5C%22%20style%3D%5C%22margin-bottom%3A%2010px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-4%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%5C%22%20style%3D%5C%22margin-bottom%3A10px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-12%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ch3%20style%3D%5C%22margin-bottom%3A0px%3B%5C%22%3E%7B%7Btipo%7D%7D%3C%2Fh3%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%7B%7Bdetalhes%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-12%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Clabel%20class%3D%5C%22label%5C%22%3EFiltros%3C%2Flabel%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%5C%22myBtnContainer%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22btn-group%5C%22%20role%3D%5C%22group%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%5C%22btn%20btn-sm%20btn-secondary%20active%5C%22%20onclick%3D%5C%22filterSelection('all')%5C%22%3E%20Todos%3C%2Fbutton%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%5C%22btn%20btn-sm%20btn-secondary%5C%22%20onclick%3D%5C%22filterSelection('nao-encontrado')%5C%22%3E%20N%C3%A3o%20encontrado%3C%2Fbutton%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%5C%22btn%20btn-sm%20btn-secondary%5C%22%20onclick%3D%5C%22filterSelection('possui-erro')%5C%22%3E%20Possui%20erro%3C%2Fbutton%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-4%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cul%20class%3D%5C%22list-group%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%5C%22list-group-item%20d-flex%20justify-content-between%20align-items-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Total%20OK%3A%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22badge%20badge-success%20badge-pill%5C%22%3E%7B%7BtotalOK%20content%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%5C%22list-group-item%20d-flex%20justify-content-between%20align-items-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Total%20com%20erro%3A%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22badge%20badge-danger%20badge-pill%5C%22%3E%7B%7BtotalErro%20content%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%5C%22list-group-item%20d-flex%20justify-content-between%20align-items-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Total%20n%C3%A3o%20encontrado%3A%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22badge%20badge-secondary%20badge-pill%5C%22%3E%7B%7BtotalNaoEncontrado%20content%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ful%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%20%20%20%20%20%20%20%20%20%20%20%20%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%20justify-content-md-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-8%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%23each%20content%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%20filterDiv%20%7B%7Bclasse%7D%7D%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-12%5C%22%20style%3D%5C%22border-bottom%3A%201px%20solid%20%23cac9c9%3B%20padding-bottom%3A%205px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%7B%7Bnumero%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22text-muted%5C%22%3E%3Csmall%3E%7B%7BnumeroCadastroPrincipal%7D%7D%3C%2Fsmall%3E%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22resultado%20float-right%5C%22%3E%3Cstrong%3E%7B%7Bresultado%7D%7D%3C%2Fstrong%3E%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cul%20style%3D%5C%22margin-bottom%3A%200px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%23each%20resultados%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%7B%7Berro%7D%7D%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%2Feach%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ful%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%2Feach%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20filterSelection(%5C%22all%5C%22)%5Cr%5Cn%20%20%20%20%20%20%20%20function%20filterSelection(c)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20x%2C%20i%3B%5Cr%5Cn%20%20%20%20%20%20%20%20x%20%3D%20document.getElementsByClassName(%5C%22filterDiv%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20if%20(c%20%3D%3D%20%5C%22all%5C%22)%20c%20%3D%20%5C%22%5C%22%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(i%20%3D%200%3B%20i%20%3C%20x.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20w3AddClass(x%5Bi%5D%2C%20%5C%22d-none%5C%22)%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20(x%5Bi%5D.className.indexOf(c)%20%3E%20-1)%20w3RemoveClass(x%5Bi%5D%2C%20%5C%22d-none%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20function%20w3AddClass(element%2C%20name)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20i%2C%20arr1%2C%20arr2%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr1%20%3D%20element.className.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr2%20%3D%20name.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(i%20%3D%200%3B%20i%20%3C%20arr2.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20(arr1.indexOf(arr2%5Bi%5D)%20%3D%3D%20-1)%20%7Belement.className%20%2B%3D%20%5C%22%20%5C%22%20%2B%20arr2%5Bi%5D%3B%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20function%20w3RemoveClass(element%2C%20name)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20i%2C%20arr1%2C%20arr2%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr1%20%3D%20element.className.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr2%20%3D%20name.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(i%20%3D%200%3B%20i%20%3C%20arr2.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20while%20(arr1.indexOf(arr2%5Bi%5D)%20%3E%20-1)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20arr1.splice(arr1.indexOf(arr2%5Bi%5D)%2C%201)%3B%20%20%20%20%20%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20element.className%20%3D%20arr1.join(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20%2F%2F%20Add%20active%20class%20to%20the%20current%20button%20(highlight%20it)%5Cr%5Cn%20%20%20%20%20%20%20%20var%20btnContainer%20%3D%20document.getElementById(%5C%22myBtnContainer%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20btns%20%3D%20btnContainer.getElementsByClassName(%5C%22btn%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(var%20i%20%3D%200%3B%20i%20%3C%20btns.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20btns%5Bi%5D.addEventListener(%5C%22click%5C%22%2C%20function()%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20var%20current%20%3D%20document.getElementsByClassName(%5C%22active%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20current%5B0%5D.className%20%3D%20current%5B0%5D.className.replace(%5C%22%20active%5C%22%2C%20%5C%22%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20this.className%20%2B%3D%20%5C%22%20active%5C%22%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20src%3D%5C%22https%3A%2F%2Fcode.jquery.com%2Fjquery-3.4.1.slim.min.js%5C%22%20integrity%3D%5C%22sha384-J6qa4849blE2%2BpoT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ%2Bn%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20src%3D%5C%22https%3A%2F%2Fcdn.jsdelivr.net%2Fnpm%2Fpopper.js%401.16.0%2Fdist%2Fumd%2Fpopper.min.js%5C%22%20integrity%3D%5C%22sha384-Q6E9RHvbIyZFJoft%2B2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20src%3D%5C%22https%3A%2F%2Fstackpath.bootstrapcdn.com%2Fbootstrap%2F4.4.1%2Fjs%2Fbootstrap.min.js%5C%22%20integrity%3D%5C%22sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%3C%2Fbody%3E%5Cr%5Cn%3C%2Fhtml%3E%22%2C%22helpers%22%3A%22%2F*%20eslint%20no-unused-vars%3A%201%20*%2F%5Cn%2F*%20eslint%20no-new-func%3A%200%20*%2F%5Cn%2F*%20*global%20__rootDirectory%20*%2F%5Cn%3B(function%20(global)%20%7B%5Cn%20%20function%20childTemplateSerializeData%20(data)%20%7B%5Cn%20%20%20%20return%20Buffer.from(JSON.stringify(data)).toString('base64')%5Cn%20%20%7D%5Cn%5Cn%20%20function%20childTemplateParseData%20(dataStr)%20%7B%5Cn%20%20%20%20return%20JSON.parse(Buffer.from(dataStr%2C%20'base64').toString())%5Cn%20%20%7D%5Cn%5Cn%20%20if%20(typeof%20module%20!%3D%3D%20'undefined'%20%26%26%20module.exports)%20%7B%5Cn%20%20%20%20module.exports.childTemplateSerializeData%20%3D%20childTemplateSerializeData%5Cn%20%20%20%20module.exports.childTemplateParseData%20%3D%20childTemplateParseData%5Cn%20%20%7D%20else%20%7B%5Cn%20%20%20%20global.childTemplateSerializeData%20%3D%20childTemplateSerializeData%5Cn%20%20%20%20global.childTemplateParseData%20%3D%20childTemplateParseData%5Cn%20%20%7D%5Cn%7D)(this)%5Cn%5Cnfunction%20now()%20%7B%5Cr%5Cn%20%20%20%20return%20new%20Date().toLocaleDateString()%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20nowPlus20Days()%20%7B%5Cr%5Cn%20%20%20%20var%20date%20%3D%20new%20Date()%5Cr%5Cn%20%20%20%20date.setDate(date.getDate()%20%2B%2020)%3B%5Cr%5Cn%20%20%20%20return%20date.toLocaleDateString()%3B%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20totalOK(content)%7B%5Cr%5Cn%20%20%20%20var%20tot%20%3D%200%5Cr%5Cn%20%20%20%20content.forEach(function%20(i)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20if(i.resultado%20%3D%3D%20%5C%22OK%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20tot%2B%2B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%7D)%5Cr%5Cn%20%20%20%20return%20tot%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20totalErro(content)%7B%5Cr%5Cn%20%20%20%20var%20tot%20%3D%200%5Cr%5Cn%20%20%20%20content.forEach(function%20(i)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20if(i.resultado%20%3D%3D%20%5C%22POSSUI%20ERRO%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20tot%2B%2B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%7D)%5Cr%5Cn%20%20%20%20return%20tot%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20totalNaoEncontrado(content)%7B%5Cr%5Cn%20%20%20%20var%20tot%20%3D%200%5Cr%5Cn%20%20%20%20content.forEach(function%20(i)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20if(i.resultado%20%3D%3D%20%5C%22N%C3%83O%20ENCONTRADO%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20tot%2B%2B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%7D)%5Cr%5Cn%20%20%20%20return%20tot%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20total(items)%20%7B%5Cr%5Cn%20%20%20%20var%20sum%20%3D%200%5Cr%5Cn%20%20%20%20%2F*items.forEach(function%20(i)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20console.log('Calculating%20item%20'%20%2B%20i.name%20%2B%20'%3B%20you%20should%20see%20this%20message%20in%20debug%20run')%5Cr%5Cn%20%20%20%20%20%20%20%20sum%20%2B%3D%20i.price%5Cr%5Cn%20%20%20%20%7D)*%2F%5Cr%5Cn%20%20%20%20return%20sum%5Cr%5Cn%7D%5Cnfunction%20toJSON%20(data)%20%7B%5Cr%5Cn%20%20return%20JSON.stringify(data)%3B%5Cr%5Cn%7D%5Cr%5Cn%22%2C%22__entitySet%22%3A%22templates%22%2C%22__name%22%3A%22resultado-main%22%2C%22__isLoaded%22%3A%22true%22%2C%22__recipe%22%3A%22html-with-browser-client%22%2C%22__shortid%22%3A%22ByeGXFzETr%22%2C%22__folder%22%3A%7B%22shortid%22%3A%22FhDpgUe%22%7D%2C%22scripts%22%3A%5B%5D%2C%22pathToEngine%22%3A%22C%3A%5C%5CAuto%5C%5CAutomation%5C%5Cjsreportapp%5C%5Cnode_modules%5C%5Cjsreport-handlebars%5C%5Clib%5C%5ChandlebarsEngine.js%22%7D"));jsreport.options=JSON.parse(decodeURIComponent("%7B%22download%22%3A%22true%22%7D"));jsreport.data={"tipo":"Resultado Anulações de Pagamentos","detalhes":"Dados verificados até a data 12/06/2019","content":[{"numero":"Anulação de Pagamento 1","numeroCadastroPrincipal":"Pagamento 90|Empenho 238","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 2","numeroCadastroPrincipal":"Pagamento 104|Empenho 237","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 5","numeroCadastroPrincipal":"Pagamento 171|Empenho 291","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 3","numeroCadastroPrincipal":"Pagamento 446|Empenho 365","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 4","numeroCadastroPrincipal":"Pagamento 532|Empenho 381","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 8","numeroCadastroPrincipal":"Pagamento 876|Empenho 740","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 9","numeroCadastroPrincipal":"Pagamento 974|Empenho 789","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 6","numeroCadastroPrincipal":"Pagamento 990|Empenho 791","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 14","numeroCadastroPrincipal":"Pagamento 1464|Empenho 937","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 7","numeroCadastroPrincipal":"Pagamento 1544|Empenho 998","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 25","numeroCadastroPrincipal":"Pagamento 1887|Empenho 1045","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 24","numeroCadastroPrincipal":"Pagamento 1887|Empenho 1045","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 22","numeroCadastroPrincipal":"Pagamento 2051|Empenho 1058","resultado":"POSSUI ERRO","classe":"possui-erro","resultados":[{"erro":"Recurso diferente (DSK: 0550001000000 != CLOUD: 0550000000100)"}]},{"numero":"Anulação de Pagamento 23","numeroCadastroPrincipal":"Pagamento 2053|Empenho 1060","resultado":"POSSUI ERRO","classe":"possui-erro","resultados":[{"erro":"Recurso diferente (DSK: 0550001010000 != CLOUD: 0550000000101)"}]},{"numero":"Anulação de Pagamento 27","numeroCadastroPrincipal":"Pagamento 2213|Empenho 1236","resultado":"POSSUI ERRO","classe":"possui-erro","resultados":[{"erro":"Recurso diferente (DSK: 0550000980000 != CLOUD: 0550000000098)"}]},{"numero":"Anulação de Pagamento 38","numeroCadastroPrincipal":"Pagamento 2264|Empenho 1268","resultado":"POSSUI ERRO","classe":"possui-erro","resultados":[{"erro":"Recurso diferente (DSK: 0550000990000 != CLOUD: 0550000000099)"}]},{"numero":"Anulação de Pagamento 61","numeroCadastroPrincipal":"Pagamento 2258|Empenho 1265","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 54","numeroCadastroPrincipal":"Pagamento 2485|Empenho 1341","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 26","numeroCadastroPrincipal":"Pagamento 2484|Empenho 1342","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 11","numeroCadastroPrincipal":"Pagamento 2589|Empenho 279","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 12","numeroCadastroPrincipal":"Pagamento 2590|Empenho 279","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 10","numeroCadastroPrincipal":"Pagamento 2601|Empenho 281","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 13","numeroCadastroPrincipal":"Pagamento 2655|Empenho 1052","resultado":"POSSUI ERRO","classe":"possui-erro","resultados":[{"erro":"Recurso diferente (DSK: 0550000950000 != CLOUD: 0550000000095)"}]},{"numero":"Anulação de Pagamento 40","numeroCadastroPrincipal":"Pagamento 2936|Empenho 1437","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 39","numeroCadastroPrincipal":"Pagamento 2936|Empenho 1437","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 19","numeroCadastroPrincipal":"Pagamento 3032|Empenho 1480","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 44","numeroCadastroPrincipal":"Pagamento 3160|Empenho 1514","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 36","numeroCadastroPrincipal":"Pagamento 3159|Empenho 1515","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 16","numeroCadastroPrincipal":"Pagamento 3207|Empenho 1407","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 21","numeroCadastroPrincipal":"Pagamento 3208|Empenho 1407","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 17","numeroCadastroPrincipal":"Pagamento 3225|Empenho 1043","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 37","numeroCadastroPrincipal":"Pagamento 3312|Empenho 1574","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 45","numeroCadastroPrincipal":"Pagamento 3340|Empenho 1578","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 20","numeroCadastroPrincipal":"Pagamento 3351|Empenho 1440","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 18","numeroCadastroPrincipal":"Pagamento 3381|Empenho 1387","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 60","numeroCadastroPrincipal":"Pagamento 3729|Empenho 1836","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 42","numeroCadastroPrincipal":"Pagamento 3875|Empenho 796","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 53","numeroCadastroPrincipal":"Pagamento 3891|Empenho 1891","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 52","numeroCadastroPrincipal":"Pagamento 3893|Empenho 1893","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 51","numeroCadastroPrincipal":"Pagamento 3893|Empenho 1893","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 43","numeroCadastroPrincipal":"Pagamento 3890|Empenho 1894","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 28","numeroCadastroPrincipal":"Pagamento 3913|Empenho 1895","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 29","numeroCadastroPrincipal":"Pagamento 3914|Empenho 1896","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 30","numeroCadastroPrincipal":"Pagamento 3915|Empenho 1897","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 31","numeroCadastroPrincipal":"Pagamento 3916|Empenho 1898","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 32","numeroCadastroPrincipal":"Pagamento 3917|Empenho 1906","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 34","numeroCadastroPrincipal":"Pagamento 3935|Empenho 1922","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 33","numeroCadastroPrincipal":"Pagamento 4070|Empenho 1344","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 41","numeroCadastroPrincipal":"Pagamento 4584|Empenho 2058","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 62","numeroCadastroPrincipal":"Pagamento 4583|Empenho 2059","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 56","numeroCadastroPrincipal":"Pagamento 4626|Empenho 2068","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 47","numeroCadastroPrincipal":"Pagamento 5235|Empenho 50","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 57","numeroCadastroPrincipal":"Pagamento 5139|Empenho 2274","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 65","numeroCadastroPrincipal":"Pagamento 5183|Empenho 2303","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 50","numeroCadastroPrincipal":"Pagamento 5236|Empenho 1314","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 46","numeroCadastroPrincipal":"Pagamento 5237|Empenho 149","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 69","numeroCadastroPrincipal":"Pagamento 5297|Empenho 2360","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 68","numeroCadastroPrincipal":"Pagamento 5297|Empenho 2360","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 64","numeroCadastroPrincipal":"Pagamento 5326|Empenho 2367","resultado":"POSSUI ERRO","classe":"possui-erro","resultados":[{"erro":"Recurso diferente (DSK: 0550000980000 != CLOUD: 0550000000098)"}]},{"numero":"Anulação de Pagamento 58","numeroCadastroPrincipal":"Pagamento 5421|Empenho 2384","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 59","numeroCadastroPrincipal":"Pagamento 5443|Empenho 50","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 67","numeroCadastroPrincipal":"Pagamento 5566|Empenho 2505","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 71","numeroCadastroPrincipal":"Pagamento 5743|Empenho 2553","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 66","numeroCadastroPrincipal":"Pagamento 6122|Empenho 2732","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 70","numeroCadastroPrincipal":"Pagamento 6125|Empenho 2734","resultado":"OK","classe":"ok"},{"numero":"Anulação de Pagamento 63","numeroCadastroPrincipal":"Pagamento 6407|Empenho 2825","resultado":"OK","classe":"ok"}]};</script></body>
+</html>
