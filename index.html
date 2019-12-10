@@ -100,7 +100,7 @@ incoming API request.
 
             $http.get("test.json")
                 .then(function(response) {
-                  $scope.stuff = response.data;
+                  $scope.stuff = response.data.array;
                 });
 
             $scope.entidade = "STARViterbocloud_1"
