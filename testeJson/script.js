@@ -3,7 +3,7 @@
 var app = angular.module('plunker', ['ngResource', 'ui.bootstrap']);
 
 app.factory('friendsFactory', function($resource) {
-  return $resource('friends.json');
+  return $resource('/friends.json');
 });
 
 app.controller('contentCtrl', function ($scope, friendsFactory) {

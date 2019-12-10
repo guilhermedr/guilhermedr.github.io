@@ -92,9 +92,16 @@ incoming API request.
                 </div>
             </div>
         </div>
+        {{stuff}}
         <script>
         var app = angular.module("myApp", []);
-        app.controller("myCtrl", function($scope) {
+        app.controller("myCtrl", function($scope, $http) {
+
+            $http.get("test.json")
+                .then(function(response) {
+                  $scope.stuff = response.data;
+                });
+
             $scope.entidade = "STARViterbocloud_1"
             $scope.relatorios = [
                 { "nome" : "Relatório de Empenhos", "link" : "resultado-empenhos.html", "totalOk": 2093, "totalErro": 186, "totalNaoEncontrado": 715 },
