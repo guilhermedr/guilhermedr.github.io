@@ -12,33 +12,85 @@ incoming API request.
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <style type="text/css">
+            @font-face {
+              font-family: 'Material Icons';
+              font-style: normal;
+              font-weight: 400;
+              src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
+              src: local('Material Icons'),
+                local('MaterialIcons-Regular'),
+                url(https://example.com/MaterialIcons-Regular.woff2) format('woff2'),
+                url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
+                url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
+            }
+            .material-icons {
+                  font-family: 'Material Icons';
+                  font-weight: normal;
+                  font-style: normal;
+                  font-size: 24px;  /* Preferred icon size */
+                  display: inline-block;
+                  line-height: 1;
+                  text-transform: none;
+                  letter-spacing: normal;
+                  word-wrap: normal;
+                  white-space: nowrap;
+                  direction: ltr;
+
+                  /* Support for all WebKit browsers. */
+                  -webkit-font-smoothing: antialiased;
+                  /* Support for Safari and Chrome. */
+                  text-rendering: optimizeLegibility;
+
+                  /* Support for Firefox. */
+                  -moz-osx-font-smoothing: grayscale;
+
+                  /* Support for IE. */
+                  font-feature-settings: 'liga';
+            }
+            .material-icons.md-18 { font-size: 18px; }
+            .material-icons.md-24 { font-size: 24px; }
+            .material-icons.md-36 { font-size: 36px; }
+            .material-icons.md-48 { font-size: 48px; }
+        </style>
     </head>
     <body ng-app="myApp" ng-controller="myCtrl">
-        <div class="container">
-            <div class="row" style="margin-bottom: 15px;">
-                <div class="col-md-8">
+        <div class="container" style="max-width: 900px;">
+            <div class="row" style="background-color: #2c3e50; color: white; margin-bottom: 15px;">
+                <div class="col-md-7">
                     <h2>Relatórios de homologações</h2>
                     <h5><strong>Entidade: </strong>{{entidade}}</h5>
                 </div>
-            </div>
-            <div class="row" ng-repeat="relatorio in relatorios">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <a href="{{relatorio.link}}">{{relatorio.nome}}</a>
+                <div class="col-md-5" style="top:23px;">
+                    <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm"><i class="material-icons md-18">search</i></span>
                         </div>
-                        <div class="col-md-1 text-center">
-                            <span class="badge badge-success badge-pill" title="OK">{{relatorio.totalOk}}</span>
-                        </div>
-                        <div class="col-md-1 text-center">
-                            <span class="badge badge-danger badge-pill" title="COM ERRO">{{relatorio.totalErro}}</span>
-                        </div>
-                        <div class="col-md-1 text-center">
-                            <span class="badge badge-secondary badge-pill" title="NÃO ENCONTRADO">{{relatorio.totalNaoEncontrado}}</span>
-                        </div>
+                        <input type="text" class="form-control" ng-model="filtroRelatorio">
+                    </div>
                 </div>
             </div>
-
+            <div class="divRelatorios">
+                <div class="row" ng-repeat="relatorio in relatorios | filter : filtroRelatorio">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <a href="{{relatorio.link}}">{{relatorio.nome}}</a>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <span class="badge badge-success badge-pill" title="OK">{{relatorio.totalOk}}</span>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <span class="badge badge-danger badge-pill" title="COM ERRO">{{relatorio.totalErro}}</span>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <span class="badge badge-secondary badge-pill" title="NÃO ENCONTRADO">{{relatorio.totalNaoEncontrado}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <script>
         var app = angular.module("myApp", []);
