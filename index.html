@@ -94,9 +94,13 @@ incoming API request.
         </div>
         <script>
         var app = angular.module("myApp", []);
-        app.controller("myCtrl", function($scope) {
+        app.controller("myCtrl", function($scope, $http) {
             $scope.entidade = "STARViterbocloud_1"
-            $scope.relatorios = [
+            $http.get('relatorios.json')
+                .then(function(response) {
+                  $scope.relatorios = response.data.relatorios;
+                });
+            /*$scope.relatorios = [
                 { "nome" : "Relatório de Empenhos", "link" : "resultado-empenhos.html", "totalOk": 2093, "totalErro": 186, "totalNaoEncontrado": 715 },
                 { "nome" : "Relatório de Anulações de Empenhos", "link" : "resultado-anulacao_empenhos.html", "totalOk": 109, "totalErro": 0, "totalNaoEncontrado": 2 },
                 { "nome" : "Relatório de Liquidações", "link" : "resultado-liquidacoes.html", "totalOk": 1800, "totalErro": 3178, "totalNaoEncontrado": 739 },
@@ -107,9 +111,10 @@ incoming API request.
                 { "nome" : "Relatório de Pagamentos", "link" : "resultado-pagamentos.html", "totalOk": 3991, "totalErro": 617, "totalNaoEncontrado": 669 },
                 { "nome" : "Relatório de Pagamentos - Descontos", "link" : "resultado-pagamentos_descontos.html", "totalOk": 97, "totalErro": 4, "totalNaoEncontrado": 1369 },
                 { "nome" : "Relatório de Anulações de Pagamentos", "link" : "resultado-anulacoes_pagamentos.html", "totalOk": 60, "totalErro": 6, "totalNaoEncontrado": 0 },
-                { "nome" : "Relatório de Anulações de Pagamentos - Descontos", "link" : "resultado-anulacoes_pagamentos_descontos.html", "totalOk": 6, "totalErro": 0, "totalNaoEncontrado": 0 }
+                { "nome" : "Relatório de Anulações de Pagamentos - Descontos", "link" : "resultado-anulacoes_pagamentos_descontos.html", "totalOk": 6, "totalErro": 0, "totalNaoEncontrado": 0 },
+                { "nome" : "Relatório de Receitas da LOA", "link" : "resultado-receitas_loa.html", "totalOk": 95, "totalErro": 0, "totalNaoEncontrado": 0 }
 
-            ]
+            ]*/
         });
         </script>
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

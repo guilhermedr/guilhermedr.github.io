@@ -1,0 +1,982 @@
+<!--
+Invoice dynamically rendered into html using handlebars and converted into pdf
+using chrome-pdf recipe. The styles are extracted into separate asset for
+better readability and later reuse.
+
+Data to this sample are mocked at the design time and should be filled on the
+incoming API request.
+!-->
+
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script type="text/javascript">
+            function aplicaCor() {
+                var x = document.getElementsByClassName('resultado');
+                for (var i = 0; i < x.length; i++) {
+                    if(x[i].textContent == "OK"){
+                        x[i].style.color = "GREEN"
+                    }else{
+                        x[i].style.color = "RED"
+                    };
+                }                
+            }
+
+        </script>
+        <title>Resultado Receitas da LOA</title>
+    </head>
+    <body onload="aplicaCor()">
+        <div class="container">
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="offset-md-2 col-md-8">
+                    <a href="index.html">Voltar</a>
+                </div>
+            </div>
+            <div class="row justify-content-md-center" style="margin-bottom: 10px;">
+                <div class="col-md-4">
+                    <div class="row" style="margin-bottom:10px;">
+                        <div class="col-md-12">
+                            <h3 style="margin-bottom:0px;">Resultado Receitas da LOA</h3>
+                            <span>Dados verificados até a data 12/06/2019</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="label">Filtros</label>
+                            <div id="myBtnContainer">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-secondary active" onclick="filterSelection('all')"> Todos</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="filterSelection('nao-encontrado')"> Não encontrado</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="filterSelection('possui-erro')"> Possui erro</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total OK:
+                            <span class="badge badge-success badge-pill">95</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total com erro:
+                            <span class="badge badge-danger badge-pill">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total não encontrado:
+                            <span class="badge badge-secondary badge-pill">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>            
+            <div class="row justify-content-md-center">
+                <div class="col-md-8">
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 1</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 2</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 3</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 4</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 5</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 6</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 7</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 8</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 9</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 10</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 11</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 12</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 13</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 14</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 15</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 16</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 17</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 18</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 19</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 20</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 21</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 22</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 23</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 24</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 25</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 26</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 27</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 28</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 29</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 30</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 31</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 32</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 33</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 34</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 35</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 36</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 37</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 38</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 39</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 40</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 41</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 42</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 43</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 44</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 45</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 46</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 47</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 48</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 49</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 50</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 51</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 52</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 53</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 54</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 55</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 56</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 57</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 58</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 59</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 60</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 61</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 62</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 63</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 64</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 65</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 66</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 67</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 68</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 69</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 70</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 71</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 72</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 73</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 74</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 75</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 76</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 77</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 78</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 79</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 80</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 81</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 82</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 83</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 84</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 85</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 86</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 87</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 88</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 89</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 90</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 91</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 92</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 93</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 94</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="row filterDiv ok">
+                        <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                            <span>Receita 95</span>
+                            <span class="text-muted"><small></small></span>
+                            <span class="resultado float-right"><strong>OK</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        filterSelection("all")
+        function filterSelection(c) {
+        var x, i;
+        x = document.getElementsByClassName("filterDiv");
+        if (c == "all") c = "";
+        for (i = 0; i < x.length; i++) {
+            w3AddClass(x[i], "d-none")
+            if (x[i].className.indexOf(c) > -1) w3RemoveClass(x[i], "d-none");
+        }
+        }
+
+        function w3AddClass(element, name) {
+        var i, arr1, arr2;
+        arr1 = element.className.split(" ");
+        arr2 = name.split(" ");
+        for (i = 0; i < arr2.length; i++) {
+            if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+        }
+        }
+
+        function w3RemoveClass(element, name) {
+        var i, arr1, arr2;
+        arr1 = element.className.split(" ");
+        arr2 = name.split(" ");
+        for (i = 0; i < arr2.length; i++) {
+            while (arr1.indexOf(arr2[i]) > -1) {
+            arr1.splice(arr1.indexOf(arr2[i]), 1);     
+            }
+        }
+        element.className = arr1.join(" ");
+        }
+
+        // Add active class to the current button (highlight it)
+        var btnContainer = document.getElementById("myBtnContainer");
+        var btns = btnContainer.getElementsByClassName("btn");
+        for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function(){
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+        }
+        </script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="http://localhost:5488/extension/browser-client/public/js/jsreport.min.js"></script><script>jsreport.serverUrl='http://localhost:5488';jsreport.template=JSON.parse(decodeURIComponent("%7B%22folder%22%3A%7B%22shortid%22%3A%22FhDpgUe%22%7D%2C%22shortid%22%3A%22ByeGXFzETr%22%2C%22name%22%3A%22resultado-main%22%2C%22recipe%22%3A%22html-with-browser-client%22%2C%22engine%22%3A%22handlebars%22%2C%22chrome%22%3A%7B%22printBackground%22%3Atrue%7D%2C%22creationDate%22%3A%222019-12-03T17%3A19%3A32.077Z%22%2C%22modificationDate%22%3A%222019-12-10T12%3A26%3A30.965Z%22%2C%22_id%22%3A%22xmmXpic7G6RObUGH%22%2C%22data%22%3A%7B%22shortid%22%3A%22SJxCVFfEaH%22%7D%2C%22resources%22%3A%7B%22items%22%3A%5B%5D%7D%2C%22content%22%3A%22%3C!--%5Cr%5CnInvoice%20dynamically%20rendered%20into%20html%20using%20handlebars%20and%20converted%20into%20pdf%5Cr%5Cnusing%20chrome-pdf%20recipe.%20The%20styles%20are%20extracted%20into%20separate%20asset%20for%5Cr%5Cnbetter%20readability%20and%20later%20reuse.%5Cr%5Cn%5Cr%5CnData%20to%20this%20sample%20are%20mocked%20at%20the%20design%20time%20and%20should%20be%20filled%20on%20the%5Cr%5Cnincoming%20API%20request.%5Cr%5Cn!--%3E%5Cr%5Cn%5Cr%5Cn%3Chtml%3E%5Cr%5Cn%20%20%20%20%3Chead%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cmeta%20content%3D%5C%22text%2Fhtml%3B%20charset%3Dutf-8%5C%22%20http-equiv%3D%5C%22Content-Type%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Clink%20rel%3D%5C%22stylesheet%5C%22%20href%3D%5C%22https%3A%2F%2Fstackpath.bootstrapcdn.com%2Fbootstrap%2F4.4.1%2Fcss%2Fbootstrap.min.css%5C%22%20integrity%3D%5C%22sha384-Vkoo8x4CGsO3%2BHhxv8T%2FQ5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20type%3D%5C%22text%2Fjavascript%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20function%20aplicaCor()%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20var%20x%20%3D%20document.getElementsByClassName('resultado')%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20(var%20i%20%3D%200%3B%20i%20%3C%20x.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if(x%5Bi%5D.textContent%20%3D%3D%20%5C%22OK%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%5Bi%5D.style.color%20%3D%20%5C%22GREEN%5C%22%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7Delse%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%5Bi%5D.style.color%20%3D%20%5C%22RED%5C%22%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Ctitle%3E%7B%7Btipo%7D%7D%3C%2Ftitle%3E%5Cr%5Cn%20%20%20%20%3C%2Fhead%3E%5Cr%5Cn%20%20%20%20%3Cbody%20onload%3D%5C%22aplicaCor()%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22container%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%5C%22%20style%3D%5C%22margin-bottom%3A%2010px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22offset-md-2%20col-md-8%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%5C%22index.html%5C%22%3EVoltar%3C%2Fa%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%20justify-content-md-center%5C%22%20style%3D%5C%22margin-bottom%3A%2010px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-4%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%5C%22%20style%3D%5C%22margin-bottom%3A10px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-12%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ch3%20style%3D%5C%22margin-bottom%3A0px%3B%5C%22%3E%7B%7Btipo%7D%7D%3C%2Fh3%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%7B%7Bdetalhes%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-12%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Clabel%20class%3D%5C%22label%5C%22%3EFiltros%3C%2Flabel%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%5C%22myBtnContainer%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22btn-group%5C%22%20role%3D%5C%22group%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%5C%22btn%20btn-sm%20btn-secondary%20active%5C%22%20onclick%3D%5C%22filterSelection('all')%5C%22%3E%20Todos%3C%2Fbutton%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%5C%22btn%20btn-sm%20btn-secondary%5C%22%20onclick%3D%5C%22filterSelection('nao-encontrado')%5C%22%3E%20N%C3%A3o%20encontrado%3C%2Fbutton%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20class%3D%5C%22btn%20btn-sm%20btn-secondary%5C%22%20onclick%3D%5C%22filterSelection('possui-erro')%5C%22%3E%20Possui%20erro%3C%2Fbutton%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-4%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cul%20class%3D%5C%22list-group%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%5C%22list-group-item%20d-flex%20justify-content-between%20align-items-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Total%20OK%3A%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22badge%20badge-success%20badge-pill%5C%22%3E%7B%7BtotalOK%20content%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%5C%22list-group-item%20d-flex%20justify-content-between%20align-items-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Total%20com%20erro%3A%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22badge%20badge-danger%20badge-pill%5C%22%3E%7B%7BtotalErro%20content%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%20class%3D%5C%22list-group-item%20d-flex%20justify-content-between%20align-items-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Total%20n%C3%A3o%20encontrado%3A%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22badge%20badge-secondary%20badge-pill%5C%22%3E%7B%7BtotalNaoEncontrado%20content%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ful%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%20%20%20%20%20%20%20%20%20%20%20%20%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%20justify-content-md-center%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-8%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%23each%20content%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22row%20filterDiv%20%7B%7Bclasse%7D%7D%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%5C%22col-md-12%5C%22%20style%3D%5C%22border-bottom%3A%201px%20solid%20%23cac9c9%3B%20padding-bottom%3A%205px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%3E%7B%7Bnumero%7D%7D%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22text-muted%5C%22%3E%3Csmall%3E%7B%7BnumeroCadastroPrincipal%7D%7D%3C%2Fsmall%3E%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cspan%20class%3D%5C%22resultado%20float-right%5C%22%3E%3Cstrong%3E%7B%7Bresultado%7D%7D%3C%2Fstrong%3E%3C%2Fspan%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cul%20style%3D%5C%22margin-bottom%3A%200px%3B%5C%22%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%23each%20resultados%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cli%3E%7B%7Berro%7D%7D%3C%2Fli%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%2Feach%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Ful%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7B%7B%2Feach%7D%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20filterSelection(%5C%22all%5C%22)%5Cr%5Cn%20%20%20%20%20%20%20%20function%20filterSelection(c)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20x%2C%20i%3B%5Cr%5Cn%20%20%20%20%20%20%20%20x%20%3D%20document.getElementsByClassName(%5C%22filterDiv%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20if%20(c%20%3D%3D%20%5C%22all%5C%22)%20c%20%3D%20%5C%22%5C%22%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(i%20%3D%200%3B%20i%20%3C%20x.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20w3AddClass(x%5Bi%5D%2C%20%5C%22d-none%5C%22)%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20(x%5Bi%5D.className.indexOf(c)%20%3E%20-1)%20w3RemoveClass(x%5Bi%5D%2C%20%5C%22d-none%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20function%20w3AddClass(element%2C%20name)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20i%2C%20arr1%2C%20arr2%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr1%20%3D%20element.className.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr2%20%3D%20name.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(i%20%3D%200%3B%20i%20%3C%20arr2.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20(arr1.indexOf(arr2%5Bi%5D)%20%3D%3D%20-1)%20%7Belement.className%20%2B%3D%20%5C%22%20%5C%22%20%2B%20arr2%5Bi%5D%3B%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20function%20w3RemoveClass(element%2C%20name)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20i%2C%20arr1%2C%20arr2%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr1%20%3D%20element.className.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20arr2%20%3D%20name.split(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(i%20%3D%200%3B%20i%20%3C%20arr2.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20while%20(arr1.indexOf(arr2%5Bi%5D)%20%3E%20-1)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20arr1.splice(arr1.indexOf(arr2%5Bi%5D)%2C%201)%3B%20%20%20%20%20%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20element.className%20%3D%20arr1.join(%5C%22%20%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%5Cr%5Cn%20%20%20%20%20%20%20%20%2F%2F%20Add%20active%20class%20to%20the%20current%20button%20(highlight%20it)%5Cr%5Cn%20%20%20%20%20%20%20%20var%20btnContainer%20%3D%20document.getElementById(%5C%22myBtnContainer%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20var%20btns%20%3D%20btnContainer.getElementsByClassName(%5C%22btn%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20for%20(var%20i%20%3D%200%3B%20i%20%3C%20btns.length%3B%20i%2B%2B)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20btns%5Bi%5D.addEventListener(%5C%22click%5C%22%2C%20function()%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20var%20current%20%3D%20document.getElementsByClassName(%5C%22active%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20current%5B0%5D.className%20%3D%20current%5B0%5D.className.replace(%5C%22%20active%5C%22%2C%20%5C%22%5C%22)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20this.className%20%2B%3D%20%5C%22%20active%5C%22%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D)%3B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%20%20%20%20%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20src%3D%5C%22https%3A%2F%2Fcode.jquery.com%2Fjquery-3.4.1.slim.min.js%5C%22%20integrity%3D%5C%22sha384-J6qa4849blE2%2BpoT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ%2Bn%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20src%3D%5C%22https%3A%2F%2Fcdn.jsdelivr.net%2Fnpm%2Fpopper.js%401.16.0%2Fdist%2Fumd%2Fpopper.min.js%5C%22%20integrity%3D%5C%22sha384-Q6E9RHvbIyZFJoft%2B2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%20%20%20%20%3Cscript%20src%3D%5C%22https%3A%2F%2Fstackpath.bootstrapcdn.com%2Fbootstrap%2F4.4.1%2Fjs%2Fbootstrap.min.js%5C%22%20integrity%3D%5C%22sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6%5C%22%20crossorigin%3D%5C%22anonymous%5C%22%3E%3C%2Fscript%3E%5Cr%5Cn%20%20%20%20%3C%2Fbody%3E%5Cr%5Cn%3C%2Fhtml%3E%22%2C%22helpers%22%3A%22%2F*%20eslint%20no-unused-vars%3A%201%20*%2F%5Cn%2F*%20eslint%20no-new-func%3A%200%20*%2F%5Cn%2F*%20*global%20__rootDirectory%20*%2F%5Cn%3B(function%20(global)%20%7B%5Cn%20%20function%20childTemplateSerializeData%20(data)%20%7B%5Cn%20%20%20%20return%20Buffer.from(JSON.stringify(data)).toString('base64')%5Cn%20%20%7D%5Cn%5Cn%20%20function%20childTemplateParseData%20(dataStr)%20%7B%5Cn%20%20%20%20return%20JSON.parse(Buffer.from(dataStr%2C%20'base64').toString())%5Cn%20%20%7D%5Cn%5Cn%20%20if%20(typeof%20module%20!%3D%3D%20'undefined'%20%26%26%20module.exports)%20%7B%5Cn%20%20%20%20module.exports.childTemplateSerializeData%20%3D%20childTemplateSerializeData%5Cn%20%20%20%20module.exports.childTemplateParseData%20%3D%20childTemplateParseData%5Cn%20%20%7D%20else%20%7B%5Cn%20%20%20%20global.childTemplateSerializeData%20%3D%20childTemplateSerializeData%5Cn%20%20%20%20global.childTemplateParseData%20%3D%20childTemplateParseData%5Cn%20%20%7D%5Cn%7D)(this)%5Cn%5Cnfunction%20now()%20%7B%5Cr%5Cn%20%20%20%20return%20new%20Date().toLocaleDateString()%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20nowPlus20Days()%20%7B%5Cr%5Cn%20%20%20%20var%20date%20%3D%20new%20Date()%5Cr%5Cn%20%20%20%20date.setDate(date.getDate()%20%2B%2020)%3B%5Cr%5Cn%20%20%20%20return%20date.toLocaleDateString()%3B%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20totalOK(content)%7B%5Cr%5Cn%20%20%20%20var%20tot%20%3D%200%5Cr%5Cn%20%20%20%20content.forEach(function%20(i)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20if(i.resultado%20%3D%3D%20%5C%22OK%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20tot%2B%2B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%7D)%5Cr%5Cn%20%20%20%20return%20tot%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20totalErro(content)%7B%5Cr%5Cn%20%20%20%20var%20tot%20%3D%200%5Cr%5Cn%20%20%20%20content.forEach(function%20(i)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20if(i.resultado%20%3D%3D%20%5C%22POSSUI%20ERRO%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20tot%2B%2B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%7D)%5Cr%5Cn%20%20%20%20return%20tot%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20totalNaoEncontrado(content)%7B%5Cr%5Cn%20%20%20%20var%20tot%20%3D%200%5Cr%5Cn%20%20%20%20content.forEach(function%20(i)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20if(i.resultado%20%3D%3D%20%5C%22N%C3%83O%20ENCONTRADO%5C%22)%7B%5Cr%5Cn%20%20%20%20%20%20%20%20%20%20%20%20tot%2B%2B%5Cr%5Cn%20%20%20%20%20%20%20%20%7D%5Cr%5Cn%20%20%20%20%7D)%5Cr%5Cn%20%20%20%20return%20tot%5Cr%5Cn%7D%5Cr%5Cn%5Cr%5Cnfunction%20total(items)%20%7B%5Cr%5Cn%20%20%20%20var%20sum%20%3D%200%5Cr%5Cn%20%20%20%20%2F*items.forEach(function%20(i)%20%7B%5Cr%5Cn%20%20%20%20%20%20%20%20console.log('Calculating%20item%20'%20%2B%20i.name%20%2B%20'%3B%20you%20should%20see%20this%20message%20in%20debug%20run')%5Cr%5Cn%20%20%20%20%20%20%20%20sum%20%2B%3D%20i.price%5Cr%5Cn%20%20%20%20%7D)*%2F%5Cr%5Cn%20%20%20%20return%20sum%5Cr%5Cn%7D%5Cnfunction%20toJSON%20(data)%20%7B%5Cr%5Cn%20%20return%20JSON.stringify(data)%3B%5Cr%5Cn%7D%5Cr%5Cn%22%2C%22__entitySet%22%3A%22templates%22%2C%22__name%22%3A%22resultado-main%22%2C%22__isLoaded%22%3A%22true%22%2C%22__recipe%22%3A%22html-with-browser-client%22%2C%22__shortid%22%3A%22ByeGXFzETr%22%2C%22__folder%22%3A%7B%22shortid%22%3A%22FhDpgUe%22%7D%2C%22__isDirty%22%3A%22false%22%2C%22scripts%22%3A%5B%5D%2C%22pathToEngine%22%3A%22C%3A%5C%5CAuto%5C%5CAutomation%5C%5Cjsreportapp%5C%5Cnode_modules%5C%5Cjsreport-handlebars%5C%5Clib%5C%5ChandlebarsEngine.js%22%7D"));jsreport.options=JSON.parse(decodeURIComponent("%7B%22download%22%3A%22true%22%7D"));jsreport.data={"tipo":"Resultado Receitas da LOA","detalhes":"Dados verificados até a data 12/06/2019","content":[{"numero":"Receita 1","resultado":"OK","classe":"ok"},{"numero":"Receita 2","resultado":"OK","classe":"ok"},{"numero":"Receita 3","resultado":"OK","classe":"ok"},{"numero":"Receita 4","resultado":"OK","classe":"ok"},{"numero":"Receita 5","resultado":"OK","classe":"ok"},{"numero":"Receita 6","resultado":"OK","classe":"ok"},{"numero":"Receita 7","resultado":"OK","classe":"ok"},{"numero":"Receita 8","resultado":"OK","classe":"ok"},{"numero":"Receita 9","resultado":"OK","classe":"ok"},{"numero":"Receita 10","resultado":"OK","classe":"ok"},{"numero":"Receita 11","resultado":"OK","classe":"ok"},{"numero":"Receita 12","resultado":"OK","classe":"ok"},{"numero":"Receita 13","resultado":"OK","classe":"ok"},{"numero":"Receita 14","resultado":"OK","classe":"ok"},{"numero":"Receita 15","resultado":"OK","classe":"ok"},{"numero":"Receita 16","resultado":"OK","classe":"ok"},{"numero":"Receita 17","resultado":"OK","classe":"ok"},{"numero":"Receita 18","resultado":"OK","classe":"ok"},{"numero":"Receita 19","resultado":"OK","classe":"ok"},{"numero":"Receita 20","resultado":"OK","classe":"ok"},{"numero":"Receita 21","resultado":"OK","classe":"ok"},{"numero":"Receita 22","resultado":"OK","classe":"ok"},{"numero":"Receita 23","resultado":"OK","classe":"ok"},{"numero":"Receita 24","resultado":"OK","classe":"ok"},{"numero":"Receita 25","resultado":"OK","classe":"ok"},{"numero":"Receita 26","resultado":"OK","classe":"ok"},{"numero":"Receita 27","resultado":"OK","classe":"ok"},{"numero":"Receita 28","resultado":"OK","classe":"ok"},{"numero":"Receita 29","resultado":"OK","classe":"ok"},{"numero":"Receita 30","resultado":"OK","classe":"ok"},{"numero":"Receita 31","resultado":"OK","classe":"ok"},{"numero":"Receita 32","resultado":"OK","classe":"ok"},{"numero":"Receita 33","resultado":"OK","classe":"ok"},{"numero":"Receita 34","resultado":"OK","classe":"ok"},{"numero":"Receita 35","resultado":"OK","classe":"ok"},{"numero":"Receita 36","resultado":"OK","classe":"ok"},{"numero":"Receita 37","resultado":"OK","classe":"ok"},{"numero":"Receita 38","resultado":"OK","classe":"ok"},{"numero":"Receita 39","resultado":"OK","classe":"ok"},{"numero":"Receita 40","resultado":"OK","classe":"ok"},{"numero":"Receita 41","resultado":"OK","classe":"ok"},{"numero":"Receita 42","resultado":"OK","classe":"ok"},{"numero":"Receita 43","resultado":"OK","classe":"ok"},{"numero":"Receita 44","resultado":"OK","classe":"ok"},{"numero":"Receita 45","resultado":"OK","classe":"ok"},{"numero":"Receita 46","resultado":"OK","classe":"ok"},{"numero":"Receita 47","resultado":"OK","classe":"ok"},{"numero":"Receita 48","resultado":"OK","classe":"ok"},{"numero":"Receita 49","resultado":"OK","classe":"ok"},{"numero":"Receita 50","resultado":"OK","classe":"ok"},{"numero":"Receita 51","resultado":"OK","classe":"ok"},{"numero":"Receita 52","resultado":"OK","classe":"ok"},{"numero":"Receita 53","resultado":"OK","classe":"ok"},{"numero":"Receita 54","resultado":"OK","classe":"ok"},{"numero":"Receita 55","resultado":"OK","classe":"ok"},{"numero":"Receita 56","resultado":"OK","classe":"ok"},{"numero":"Receita 57","resultado":"OK","classe":"ok"},{"numero":"Receita 58","resultado":"OK","classe":"ok"},{"numero":"Receita 59","resultado":"OK","classe":"ok"},{"numero":"Receita 60","resultado":"OK","classe":"ok"},{"numero":"Receita 61","resultado":"OK","classe":"ok"},{"numero":"Receita 62","resultado":"OK","classe":"ok"},{"numero":"Receita 63","resultado":"OK","classe":"ok"},{"numero":"Receita 64","resultado":"OK","classe":"ok"},{"numero":"Receita 65","resultado":"OK","classe":"ok"},{"numero":"Receita 66","resultado":"OK","classe":"ok"},{"numero":"Receita 67","resultado":"OK","classe":"ok"},{"numero":"Receita 68","resultado":"OK","classe":"ok"},{"numero":"Receita 69","resultado":"OK","classe":"ok"},{"numero":"Receita 70","resultado":"OK","classe":"ok"},{"numero":"Receita 71","resultado":"OK","classe":"ok"},{"numero":"Receita 72","resultado":"OK","classe":"ok"},{"numero":"Receita 73","resultado":"OK","classe":"ok"},{"numero":"Receita 74","resultado":"OK","classe":"ok"},{"numero":"Receita 75","resultado":"OK","classe":"ok"},{"numero":"Receita 76","resultado":"OK","classe":"ok"},{"numero":"Receita 77","resultado":"OK","classe":"ok"},{"numero":"Receita 78","resultado":"OK","classe":"ok"},{"numero":"Receita 79","resultado":"OK","classe":"ok"},{"numero":"Receita 80","resultado":"OK","classe":"ok"},{"numero":"Receita 81","resultado":"OK","classe":"ok"},{"numero":"Receita 82","resultado":"OK","classe":"ok"},{"numero":"Receita 83","resultado":"OK","classe":"ok"},{"numero":"Receita 84","resultado":"OK","classe":"ok"},{"numero":"Receita 85","resultado":"OK","classe":"ok"},{"numero":"Receita 86","resultado":"OK","classe":"ok"},{"numero":"Receita 87","resultado":"OK","classe":"ok"},{"numero":"Receita 88","resultado":"OK","classe":"ok"},{"numero":"Receita 89","resultado":"OK","classe":"ok"},{"numero":"Receita 90","resultado":"OK","classe":"ok"},{"numero":"Receita 91","resultado":"OK","classe":"ok"},{"numero":"Receita 92","resultado":"OK","classe":"ok"},{"numero":"Receita 93","resultado":"OK","classe":"ok"},{"numero":"Receita 94","resultado":"OK","classe":"ok"},{"numero":"Receita 95","resultado":"OK","classe":"ok"}]};</script></body>
+</html>

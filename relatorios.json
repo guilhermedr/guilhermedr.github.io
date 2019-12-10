@@ -1,0 +1,14 @@
+{ "relatorios": [
+{ "nome" : "Relatório de Empenhos", "link" : "resultado-empenhos.html", "totalOk": 2093, "totalErro": 186, "totalNaoEncontrado": 715 },
+{ "nome" : "Relatório de Anulações de Empenhos", "link" : "resultado-anulacao_empenhos.html", "totalOk": 109, "totalErro": 0, "totalNaoEncontrado": 2 },
+{ "nome" : "Relatório de Liquidações", "link" : "resultado-liquidacoes.html", "totalOk": 1800, "totalErro": 3178, "totalNaoEncontrado": 739 },
+{ "nome" : "Relatório de Liquidações - Vencimentos", "link" : "resultado-liquidacoes_vencimentos.html", "totalOk": 4968, "totalErro": 10, "totalNaoEncontrado": 739 },
+{ "nome" : "Relatório de Liquidações - Comprovantes", "link" : "resultado-liquidacoes_comprovantes.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 4263 },
+{ "nome" : "Relatório de Anulações de Liquidações", "link" : "resultado-anulacao_liquidacoes.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 92 },
+{ "nome" : "Relatório de Anulações de Liquidações - Vencimentos", "link" : "resultado-anulacao_liquidacoes_vencimentos.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 92 },
+{ "nome" : "Relatório de Pagamentos", "link" : "resultado-pagamentos.html", "totalOk": 3991, "totalErro": 617, "totalNaoEncontrado": 669 },
+{ "nome" : "Relatório de Pagamentos - Descontos", "link" : "resultado-pagamentos_descontos.html", "totalOk": 97, "totalErro": 4, "totalNaoEncontrado": 1369 },
+{ "nome" : "Relatório de Anulações de Pagamentos", "link" : "resultado-anulacoes_pagamentos.html", "totalOk": 60, "totalErro": 6, "totalNaoEncontrado": 0 },
+{ "nome" : "Relatório de Anulações de Pagamentos - Descontos", "link" : "resultado-anulacoes_pagamentos_descontos.html", "totalOk": 6, "totalErro": 0, "totalNaoEncontrado": 0 },
+{ "nome" : "Relatório de Receitas da LOA", "link" : "resultado-receitas_loa.html", "totalOk": 95, "totalErro": 0, "totalNaoEncontrado": 0 }
+]}
