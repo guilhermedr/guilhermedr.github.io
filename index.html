@@ -1,59 +1,11 @@
-<!--
-Invoice dynamically rendered into html using handlebars and converted into pdf
-using chrome-pdf recipe. The styles are extracted into separate asset for
-better readability and later reuse.
-
-Data to this sample are mocked at the design time and should be filled on the
-incoming API request.
-!-->
-
 <html>
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <style type="text/css">
-            @font-face {
-              font-family: 'Material Icons';
-              font-style: normal;
-              font-weight: 400;
-              src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
-              src: local('Material Icons'),
-                local('MaterialIcons-Regular'),
-                url(https://example.com/MaterialIcons-Regular.woff2) format('woff2'),
-                url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
-                url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
-            }
-            .material-icons {
-                  font-family: 'Material Icons';
-                  font-weight: normal;
-                  font-style: normal;
-                  font-size: 24px;  /* Preferred icon size */
-                  display: inline-block;
-                  line-height: 1;
-                  text-transform: none;
-                  letter-spacing: normal;
-                  word-wrap: normal;
-                  white-space: nowrap;
-                  direction: ltr;
-
-                  /* Support for all WebKit browsers. */
-                  -webkit-font-smoothing: antialiased;
-                  /* Support for Safari and Chrome. */
-                  text-rendering: optimizeLegibility;
-
-                  /* Support for Firefox. */
-                  -moz-osx-font-smoothing: grayscale;
-
-                  /* Support for IE. */
-                  font-feature-settings: 'liga';
-            }
-            .material-icons.md-18 { font-size: 18px; }
-            .material-icons.md-24 { font-size: 24px; }
-            .material-icons.md-36 { font-size: 36px; }
-            .material-icons.md-48 { font-size: 48px; }
-        </style>
+        <link href="css/style.css" rel="stylesheet">
+        <title>Relatórios de Homologações</title>
     </head>
     <body ng-app="myApp" ng-controller="myCtrl">
         <div class="container" style="max-width: 900px;">
@@ -72,11 +24,11 @@ incoming API request.
                 </div>
             </div>
             <div class="divRelatorios">
-                <div class="row" ng-repeat="relatorio in relatorios | filter : filtroRelatorio">
+                <div class="row" ng-repeat="relatorio in jsonData.relatorios | filter: filtroRelatorio">
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-9">
-                                <a href="{{relatorio.link}}">{{relatorio.nome}}</a>
+                                <a href="relatorio.html?tipo={{relatorio.tipo}}">{{relatorio.nome}}</a>
                             </div>
                             <div class="col-md-1 text-center">
                                 <span class="badge badge-success badge-pill" title="OK">{{relatorio.totalOk}}</span>
@@ -92,33 +44,9 @@ incoming API request.
                 </div>
             </div>
         </div>
-        <script>
-        var app = angular.module("myApp", []);
-        app.controller("myCtrl", function($scope, $http) {
-            $scope.entidade = "STARViterbocloud_1"
-            $http.get('relatorios.json')
-                .then(function(response) {
-                  $scope.relatorios = response.data.relatorios;
-                });
-            /*$scope.relatorios = [
-                { "nome" : "Relatório de Empenhos", "link" : "resultado-empenhos.html", "totalOk": 2093, "totalErro": 186, "totalNaoEncontrado": 715 },
-                { "nome" : "Relatório de Anulações de Empenhos", "link" : "resultado-anulacao_empenhos.html", "totalOk": 109, "totalErro": 0, "totalNaoEncontrado": 2 },
-                { "nome" : "Relatório de Liquidações", "link" : "resultado-liquidacoes.html", "totalOk": 1800, "totalErro": 3178, "totalNaoEncontrado": 739 },
-                { "nome" : "Relatório de Liquidações - Vencimentos", "link" : "resultado-liquidacoes_vencimentos.html", "totalOk": 4968, "totalErro": 10, "totalNaoEncontrado": 739 },
-                { "nome" : "Relatório de Liquidações - Comprovantes", "link" : "resultado-liquidacoes_comprovantes.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 4263 },
-                { "nome" : "Relatório de Anulações de Liquidações", "link" : "resultado-anulacao_liquidacoes.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 92 },
-                { "nome" : "Relatório de Anulações de Liquidações - Vencimentos", "link" : "resultado-anulacao_liquidacoes_vencimentos.html", "totalOk": 0, "totalErro": 0, "totalNaoEncontrado": 92 },
-                { "nome" : "Relatório de Pagamentos", "link" : "resultado-pagamentos.html", "totalOk": 3991, "totalErro": 617, "totalNaoEncontrado": 669 },
-                { "nome" : "Relatório de Pagamentos - Descontos", "link" : "resultado-pagamentos_descontos.html", "totalOk": 97, "totalErro": 4, "totalNaoEncontrado": 1369 },
-                { "nome" : "Relatório de Anulações de Pagamentos", "link" : "resultado-anulacoes_pagamentos.html", "totalOk": 60, "totalErro": 6, "totalNaoEncontrado": 0 },
-                { "nome" : "Relatório de Anulações de Pagamentos - Descontos", "link" : "resultado-anulacoes_pagamentos_descontos.html", "totalOk": 6, "totalErro": 0, "totalNaoEncontrado": 0 },
-                { "nome" : "Relatório de Receitas da LOA", "link" : "resultado-receitas_loa.html", "totalOk": 95, "totalErro": 0, "totalNaoEncontrado": 0 }
-
-            ]*/
-        });
-        </script>
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script src="script/script.js"></script>
     </body>
 </html>

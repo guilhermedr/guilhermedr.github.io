@@ -1,0 +1,118 @@
+<html ng-app="myApp" ng-controller="myCtrl">
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <link href="css/style.css" rel="stylesheet">
+        <title>{{jsonData.tipo}}</title>
+    </head>
+    <body>
+            <div class="row cabecalho-rel">
+                <div class="col-md-2 text-right">
+                    <button onclick="window.location.assign('index.html')" class="margin-top-45 btn btn-light"><i class="material-icons">arrow_back</i></button>
+                </div>
+                <div class="col-md-4">
+                    <div class="row" style="margin-bottom:10px;">
+                        <div class="col-md-12">
+                            <h3 style="margin-bottom:0px;">{{jsonData.tipo}}</h3>
+                            <span>{{jsonData.detalhes}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="label">Filtros</label>
+                            <div id="myBtnContainer">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-light active" onclick="filterSelection('all')"> Todos</button>
+                                    <button class="btn btn-sm btn-light" onclick="filterSelection('possui-erro')"> Possui erro</button>
+                                    <button class="btn btn-sm btn-light" onclick="filterSelection('nao-encontrado')"> Não encontrado</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 align-center color-black">
+                    <ul class="list-group max-width-280">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total OK:
+                            <span class="badge badge-success badge-pill">{{totalOk}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total com erro:
+                            <span class="badge badge-danger badge-pill">{{totalErro}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Total não encontrado:
+                            <span class="badge badge-secondary badge-pill">{{totalNaoEncontrado}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>         
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col-md-8">
+                    <div ng-repeat="registros in jsonData.content">
+                        <div class="row filterDiv {{registros.classe}}">
+                            <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
+                                <span>{{registros.numero}}</span>
+                                <span class="text-muted"><small></small></span>
+                                <span class="resultado {{registros.classe}} float-right"><strong>{{registros.resultado}}</strong></span>
+                                <ul style="margin-bottom: 0px;">
+                                    <li ng-repeat="resultado in registros.resultados">{{resultado.erro}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        filterSelection("all")
+        function filterSelection(c) {
+        var x, i;
+        x = document.getElementsByClassName("filterDiv");
+        if (c == "all") c = "";
+        for (i = 0; i < x.length; i++) {
+            w3AddClass(x[i], "d-none")
+            if (x[i].className.indexOf(c) > -1) w3RemoveClass(x[i], "d-none");
+        }
+        }
+
+        function w3AddClass(element, name) {
+        var i, arr1, arr2;
+        arr1 = element.className.split(" ");
+        arr2 = name.split(" ");
+        for (i = 0; i < arr2.length; i++) {
+            if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+        }
+        }
+
+        function w3RemoveClass(element, name) {
+        var i, arr1, arr2;
+        arr1 = element.className.split(" ");
+        arr2 = name.split(" ");
+        for (i = 0; i < arr2.length; i++) {
+            while (arr1.indexOf(arr2[i]) > -1) {
+            arr1.splice(arr1.indexOf(arr2[i]), 1);     
+            }
+        }
+        element.className = arr1.join(" ");
+        }
+
+        // Add active class to the current button (highlight it)
+        var btnContainer = document.getElementById("myBtnContainer");
+        var btns = btnContainer.getElementsByClassName("btn");
+        for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function(){
+            var current = document.getElementsByClassName("active");
+            current[0].className = current[0].className.replace(" active", "");
+            this.className += " active";
+        });
+        }
+        </script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script src="script/script.js"></script>
+</html>
