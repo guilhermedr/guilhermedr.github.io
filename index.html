@@ -8,21 +8,21 @@
         <title>Relatórios de Homologações</title>
     </head>
     <body ng-app="myApp" ng-controller="myCtrl">
-        <div class="container" style="max-width: 900px;">
-            <div class="row" style="background-color: #2c3e50; color: white; margin-bottom: 15px;">
-                <div class="col-md-7">
-                    <h2>Relatórios de homologações</h2>
-                    <h5><strong>Entidade: </strong>{{entidade}}</h5>
-                </div>
-                <div class="col-md-5" style="top:23px;">
-                    <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="inputGroup-sizing-sm"><i class="material-icons md-18">search</i></span>
-                        </div>
-                        <input type="text" class="form-control" ng-model="filtroRelatorio">
+        <div class="row cabecalho-rel">
+            <div class="offset-md-1 col-md-7">
+                <h2>Relatórios de homologações</h2>
+                <h5><strong>Entidade: </strong>{{entidade}}</h5>
+            </div>
+            <div class="col-md-4" style="top:23px;">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm"><i class="material-icons md-18">search</i></span>
                     </div>
+                    <input type="text" class="form-control" ng-model="filtroRelatorio" style="margin-right: 25px;">
                 </div>
             </div>
+        </div>
+        <div class="container" style="max-width: 900px;">
             <div class="divRelatorios">
                 <div class="row" ng-repeat="relatorio in jsonData.relatorios | filter: filtroRelatorio">
                     <div class="col-md-12">
