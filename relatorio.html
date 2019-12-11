@@ -12,7 +12,7 @@
                 <div class="col-md-2 text-right">
                     <button onclick="window.location.assign('index.html')" class="margin-top-45 btn btn-light"><i class="material-icons">arrow_back</i></button>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="row" style="margin-bottom:10px;">
                         <div class="col-md-12">
                             <h3 style="margin-bottom:0px;">{{jsonData.tipo}}</h3>
@@ -21,18 +21,26 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <label class="label">Filtros</label>
-                            <div id="myBtnContainer">
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-sm btn-light active" onclick="filterSelection('all')"> Todos</button>
-                                    <button class="btn btn-sm btn-light" onclick="filterSelection('possui-erro')"> Possui erro</button>
-                                    <button class="btn btn-sm btn-light" onclick="filterSelection('nao-encontrado')"> Não encontrado</button>
+                            <label class="label">Filtros</label><br/>
+                            <div class="display-box">
+                                <div id="myBtnContainer">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-light active" onclick="filterSelection('all')"> Todos</button>
+                                        <button class="btn btn-sm btn-light" onclick="filterSelection('possui-erro')"> Possui erro</button>
+                                        <button class="btn btn-sm btn-light" onclick="filterSelection('nao-encontrado')"> Não encontrado</button>
+                                    </div>
+                                </div>
+                                <div class="input-group input-group-sm mb-3" style="margin-left: 5px;">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm"><i class="material-icons md-18">search</i></span>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="filtroDados">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 align-center color-black">
+                <div class="col-md-4 align-center color-black">
                     <ul class="list-group max-width-280">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Total OK:
@@ -52,7 +60,7 @@
         <div class="container">
             <div class="row justify-content-md-center">
                 <div class="col-md-8">
-                    <div ng-repeat="registros in jsonData.content">
+                    <div ng-repeat="registros in jsonData.content | filter: filtroDados">
                         <div class="row filterDiv {{registros.classe}}">
                             <div class="col-md-12" style="border-bottom: 1px solid #cac9c9; padding-bottom: 5px;">
                                 <span>{{registros.numero}}</span>

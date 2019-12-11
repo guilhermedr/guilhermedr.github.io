@@ -48,16 +48,14 @@
   padding-bottom: 10px;
   color: white;
 }
-.max-width-280{
-  max-width: 280px;
-}
-.align-center{
+.max-width-280 { max-width: 280px; }
+.align-center {
   text-align: center;
   text-align: -webkit-center;
 }
-.margin-top-25{ margin-top: 25px; }
-.margin-top-45{ margin-top: 45px; }
+.margin-top-25 { margin-top: 25px; }
+.margin-top-45 { margin-top: 45px; }
 
-.color-black{
-  color: black;
-}
+.color-black{ color: black; }
+
+.display-box { display: -webkit-inline-box; }
