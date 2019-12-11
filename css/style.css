@@ -47,6 +47,8 @@
   padding-top: 10px;
   padding-bottom: 10px;
   color: white;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 .max-width-280 { max-width: 280px; }
 .align-center {
@@ -55,6 +57,7 @@
 }
 .margin-top-25 { margin-top: 25px; }
 .margin-top-45 { margin-top: 45px; }
+.none-margin-left-right { margin-left: 0px; margin-right: 0px; }
 
 .color-black{ color: black; }
 
