@@ -17,6 +17,10 @@ if (pathName.indexOf('?tipo=') != -1) {
     console.log(jsonFile);
 }
 
+function downloadFile() {
+   return window.open('csv/'+jsonFile+'.csv');
+}
+
 var app = angular.module("myApp", []);
 
 app.controller("myCtrl", function($scope, $http) {

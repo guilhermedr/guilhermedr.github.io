@@ -10,5 +10,7 @@
 { "nome" : "Relatório de Pagamentos - Descontos", "tipo" : "pagamentos-descontos", "totalOk": 97, "totalErro": 4, "totalNaoEncontrado": 1369 },
 { "nome" : "Relatório de Anulações de Pagamentos", "tipo" : "anulacoes-pagamentos", "totalOk": 60, "totalErro": 6, "totalNaoEncontrado": 0 },
 { "nome" : "Relatório de Anulações de Pagamentos - Descontos", "tipo" : "anulacoes-pagamentos-descontos", "totalOk": 6, "totalErro": 0, "totalNaoEncontrado": 0 },
-{ "nome" : "Relatório de Receitas da LOA", "tipo" : "receitas-loa", "totalOk": 95, "totalErro": 0, "totalNaoEncontrado": 0 }
+{ "nome" : "Relatório de Receitas da LOA", "tipo" : "receitas-loa", "totalOk": 95, "totalErro": 0, "totalNaoEncontrado": 0 },
+{ "nome" : "Relatório de Receitas da LOA - Recursos", "tipo" : "receitas-loa-recursos", "totalOk": 83, "totalErro": 0, "totalNaoEncontrado": 12 },
+{ "nome" : "Relatório de Receitas da LOA - Deduções", "tipo" : "receitas-loa-deducoes", "totalOk": 6, "totalErro": 0, "totalNaoEncontrado": 0 }
 ]}
