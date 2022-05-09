@@ -1,8 +1,0 @@
-{ "tipo": "Resultado Deduções das Receitas da LOA", "detalhes": "Dados verificados até a data 12/06/2019", "content": [
-{ "numero": "Dedução  (Tipo: FUNDEB)", "numeroCadastroPrincipal": "Receita 17280131000000", "resultado": "OK", "classe": "ok" },
-{ "numero": "Dedução  (Tipo: FUNDEB)", "numeroCadastroPrincipal": "Receita 17180611000000", "resultado": "OK", "classe": "ok" },
-{ "numero": "Dedução  (Tipo: FUNDEB)", "numeroCadastroPrincipal": "Receita 17280121000000", "resultado": "OK", "classe": "ok" },
-{ "numero": "Dedução  (Tipo: FUNDEB)", "numeroCadastroPrincipal": "Receita 17180121000000", "resultado": "OK", "classe": "ok" },
-{ "numero": "Dedução  (Tipo: FUNDEB)", "numeroCadastroPrincipal": "Receita 17180151000000", "resultado": "OK", "classe": "ok" },
-{ "numero": "Dedução  (Tipo: FUNDEB)", "numeroCadastroPrincipal": "Receita 17280111000000", "resultado": "OK", "classe": "ok" }
-]}

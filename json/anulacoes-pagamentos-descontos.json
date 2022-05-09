@@ -1,8 +1,0 @@
-{ "tipo": "Resultado Descontos de Anulações de Pagamentos", "detalhes": "Dados verificados até a data 12/06/2019", "content": [
-{ "numero": "Anulação 18", "numeroCadastroPrincipal": "Pagamento 3381|Empenho 1387", "resultado": "OK", "classe": "ok" },
-{ "numero": "Anulação 33", "numeroCadastroPrincipal": "Pagamento 4070|Empenho 1344", "resultado": "OK", "classe": "ok" },
-{ "numero": "Anulação 47", "numeroCadastroPrincipal": "Pagamento 5235|Empenho 50", "resultado": "OK", "classe": "ok" },
-{ "numero": "Anulação 50", "numeroCadastroPrincipal": "Pagamento 5236|Empenho 1314", "resultado": "OK", "classe": "ok" },
-{ "numero": "Anulação 46", "numeroCadastroPrincipal": "Pagamento 5237|Empenho 149", "resultado": "OK", "classe": "ok" },
-{ "numero": "Anulação 59", "numeroCadastroPrincipal": "Pagamento 5443|Empenho 50", "resultado": "OK", "classe": "ok" }
-]}
