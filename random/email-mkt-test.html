@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vamos mudar o cenário atual do seu município perante a Secretaria do Tesouro Nacional!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #151110;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Header storytelling */
+        .story-header {
+            background: linear-gradient(135deg, #002f58 0%, #2f90dd 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .story-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .story-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Story content sections */
+        .story-section {
+            padding: 30px;
+            margin: 0;
+            position: relative;
+        }
+        
+        .story-intro {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border-left: 4px solid #59cdf6;
+        }
+        
+        .story-problem {
+            background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+            border-left: 4px solid #f87171;
+        }
+        
+        .story-solution {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border-left: 4px solid #34d399;
+        }
+        
+        .story-offer {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border-left: 4px solid #f2cc47;
+        }
+        
+        .chapter-number {
+            display: inline-block;
+            background: #002f58;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .chapter-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #002f58;
+            margin: 0 0 15px 0;
+        }
+        
+        .story-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #374151;
+        }
+        
+        .highlight-box {
+            background: rgba(89, 205, 246, 0.1);
+            border: 2px solid #59cdf6;
+            border-radius: 8px;
+            padding: 0px 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+        }
+        
+        .feature-list li {
+            padding: 2px 0;
+            font-size: 16px;
+            color: #1f2937;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .feature-list li::before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 16px;
+        }
+
+        .bonus-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+        }
+        
+        .bonus-list li {
+            padding: 2px 0;
+            font-size: 16px;
+            color: #1f2937;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .bonus-list li::before {
+            content: '🛠';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 16px;
+        }
+        
+        .emoji-section {
+            font-size: 18px;
+            font-weight: 600;
+            color: #002f58;
+            margin: 25px 0 15px 0;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #002f58 0%, #2f90dd 100%);
+            color: white;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #f2cc47, #ffd54f);
+            color: #002f58;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(242, 204, 71, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(242, 204, 71, 0.6);
+        }
+        
+        .bonus-badge {
+            background: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .signature {
+            background: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            border-top: 3px solid #59cdf6;
+        }
+        
+        .signature-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #002f58;
+            margin-bottom: 5px;
+        }
+        
+        .signature-title {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .contact-item {
+            /* background: white; */
+            /* padding: 8px 15px; */
+            /* border-radius: 20px; */
+            /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        .story-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #59cdf6, transparent);
+            margin: 30px 0;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .story-section {
+                padding: 20px;
+            }
+            .story-title {
+                font-size: 24px;
+            }
+            .chapter-title {
+                font-size: 20px;
+            }
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header da História -->
+        <div class="story-header">
+            <img src="https://solucoesfalcon.com/img/falcon-white.png" width="100" alt="Falcon" class="logo">
+            <h3 class="story-title">Vamos mudar o cenário atual do seu município perante a Secretaria do Tesouro Nacional!</h3>
+        </div>
+        
+        <!-- Capítulo 1: O Encontro -->
+        <div class="story-section story-intro">
+            <!-- <div class="chapter-number">1</div> -->
+            <!-- <h2 class="chapter-title">O Encontro</h2> -->
+            <p class="story-text">Olá, tudo bem ?</p>
+            <p class="story-text"><strong>Sou o Diordgenes, da Falcon</strong>. Estou encontrando em contato com você pois <strong>identifiquei que <span style="color: red;">recebeu uma nota baixa</span> em um ou mais indicadores da Secretaria do Tesouro Nacional no ano de 2024</strong>. Mas isso não precisa se repetir em 2025! A Falcon atua no setor público, especialmente na <strong>CAPAG</strong> e no <strong>Ranking da Qualidade da Informação Contábil e Fiscal</strong>, com uma ferramenta que projeta a nota futura do seu município e acompanha mês a mês para ajudar na melhoria.</p>
+            <p class="story-text"><strong>Quero oferecer uma demonstração gratuita sobre a situação contábil e fiscal atual do seu município, baseada nos dados que vocês enviam à STN.</strong></p>
+
+
+            <div class="emoji-section">O que nosso produto faz pelo seu município:</div>
+            <div class="highlight-box">
+                <p class="story-text">Lemos seus arquivos antes mesmo do envio ao SICONFI, para identificar e apontar inconformidades. Validamos <strong>todas as regras</strong> da Secretaria do Tesouro Nacional, para garantir que tudo esteja correto. Também analisamos os dados já enviados, indicando melhorias que podem elevar sua nota — <strong>muitas vezes, é possível retificar os arquivos para melhorar o resultado.</strong></p>
+            </div>
+            
+            <div class="emoji-section">Cobertura completa das prestações de contas:</div>
+            <p class="story-text">Trabalhamos com os principais arquivos enviados ao Siconfi da STN:</p>
+            <ul class="feature-list">
+                <li>Matrizes de Saldos Contábeis</li>
+                <li>Relatórios da LRF (RREO e RGF)</li>
+                <li>Demonstrativo de Contas Anuais</li>
+            </ul>
+            <p class="story-text">Desta forma, identificamos falhas e oportunidades que podem estar prejudicando a nota do seu município.</p>
+
+            <h2 class="chapter-title">Agora quero te oferecer uma oportunidade única:</h2>
+            
+            <p class="story-text"><strong>Te mostrarei de forma gratuíta e sem compromisso, a situação atual do seu município perante a Secretaria do Tesouro Nacional</strong>. E como bônus entregarei, <span style="text-decoration: underline;">sem custo algum</span>, o diagnóstico completo do mês atual do seu município, onde você terá:
+            <ul class="bonus-list">
+                <li>Mais de 140 validações apurando inconformidades nos seus dados</li>
+                <li>Detalhamento completo das contas e contas correntes com inconsistências</li>
+                <li>Sugestão de ajustes em movimentações e lançamentos contábeis do seu município</li>
+                <li>Situação atual da sua nota no Ranking da Qualidade da Informação Contábil e Fiscal da STN para o exercício de 2025.</li>
+                <li>Projeção da nova nota a partir dos ajustes das inconformidades encontradas, para o exercício de 2025.</li>
+                <li>Situação atual da sua nota na CAPAG (Indicador da Capacidade de Pagamento do Município) para o exercício de 2025.</li>
+            </ul>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <p style="margin: 0 0 20px 0; font-size: 16px; opacity: 0.9;">Agora, pra continuarmos essa busca pela melhoria contínua, te convido para uma conversa de 20 minutos, onde te demonstrarei tudo isso e tirarei qualquer dúvida que você tenha sobre este assunto. </p>
+            <a href="mailto:diretoria@solucoesfalcon.com" class="cta-button">RESPONDA ESTE E-MAIL E VAMOS CONVERSAR</a>
+        </div>
+        
+        <!-- Assinatura -->
+        <div class="signature">
+            <div class="signature-name">Um abraço,<br>Diordgenes Trombim</div>
+            <div class="signature-title">CEO | Falcon -  Soluções Inteligentes</div>
+            
+            <div class="contact-info">
+                <a hrel="mailto:diretoria@solucoesfalcon.com" class="contact-item">📧 diretoria@solucoesfalcon.com</a>
+                <a href="https://solucoesfalcon.com" class="contact-item">🌐 www.solucoesfalcon.com</a>
+                <div class="contact-item">📱 (48) 98505-0650</div>
+                <div class="contact-item">🏢 CNPJ: 55.220.405/0001-27</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
